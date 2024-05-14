@@ -2,9 +2,11 @@ const express = require('express')
 const dbConnection = require('./config/config')
 const app = express()
 require('dotenv').config()
-PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3000
+const routes = require('./routes/task')
 
-app.get('/', (req,res)=> (res.send('Recuperación')))
+app.use('/', routes)
+
 
 dbConnection()
 
