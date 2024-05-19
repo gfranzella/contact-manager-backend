@@ -4,7 +4,7 @@ const ContactController = {
     async getAllContacts(req,res) {
         try {
             const contacts = await Contact.find();
-            res.json(contacts);
+            res.json(contacts || []); // Asegúrate de que sea un arreglo
         } catch (error) {
             console.log(error)
             res.status(500).send({ message: "There was a problem trying to find contacts" });
@@ -14,7 +14,15 @@ const ContactController = {
     async getContactById(req,res) {
         try {
             const contact = await Contact.findById(req.params._id)
-            res.status(201).json(contact);
+            // res.status(201).json(contact);
+
+        if (contact) {
+            res.status(200).json(contact);
+        } else {
+            res.status(404).send({ message: "Contact not found" });
+        }
+
+
         } catch (error) {
             console.log(error);
             res.status(500).send({
@@ -37,8 +45,21 @@ const ContactController = {
 
     async updateContact(req,res){
         try {
-            const contact = await Contact.findByIdAndUpdate(req.params._id, {completed: true}, {new: true});
-            res.send({ message: "Contact successfully updated", contact });
+            // const contact = await Contact.findByIdAndUpdate(req.params._id, {completed: true}, {new: true});
+            // res.send({ message: "Contact successfully updated", contact });
+            
+            const contact = await Contact.findByIdAndUpdate(
+              req.params._id,
+              { $set: req.body }, // Utilizar los datos del cuerpo de la solicitud
+              { new: true, runValidators: true } // Obtener el documento actualizado y validar los datos
+            );
+
+            if (contact) {
+                res.send({ message: "Contact successfully updated", contact });
+            } else {
+                res.status(404).send({ message: "Contact not found" });
+            }
+
         } catch (error) {
             console.log(error);
             res.status(500).send({
@@ -52,7 +73,14 @@ const ContactController = {
         try {
             const id = req.params._id;
             const contact = await Contact.findByIdAndDelete(id);
-            res.send({ message: "contact deleted", contact });
+            // res.send({ message: "contact deleted", contact });
+
+        if (contact) {
+          res.send({ message: "Contact deleted", contact });
+        } else {
+          res.status(404).send({ message: "Contact not found" });
+        }
+
         } catch (error) {
             console.log(error);
             res
