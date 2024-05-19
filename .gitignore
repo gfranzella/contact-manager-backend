@@ -2,7 +2,7 @@
 /node_modules
 
 # Archivos generados por el entorno de desarrollo
-/.env
+.env
 /.env.*
 /.env.local
 /.env.development.local
@@ -29,4 +29,4 @@ package-lock.json
 # Otros archivos y directorios generados
 /.idea
 /.vscode
-/.DS_Store
+/.DS_Store.env
